@@ -16,7 +16,7 @@ Input is accepted from stdin, output CSV is sent to stdout.
 ### Usage
 
 ```bash
-$ pdftotext -raw ITE_Keyword_Report.pdf | ite-personal-performance
+$ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance
 ```
 
 ### Example output
@@ -43,7 +43,7 @@ The following will create 4 study groups and display the top 6 missed topics in
 common for each group.
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf | ite-personal-performance | python clustering.py 4 6
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance | python clustering.py 4 6
 ```
 
 ### Example output
@@ -73,7 +73,6 @@ in common for each group.
 
 ### Topics in common
 
-- Aging: Phys changes (A): 3 / 3 missed (%100)
 - Airway fire prevention (A): 3 / 3 missed (%100)
 - Ambulatory surg: Fast track criteria (A): 3 / 3 missed (%100)
 ```
@@ -82,5 +81,5 @@ For ease of distribution, the document can be rendered as a Word DOCX (or
 anything else) easily using pandoc:
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf | ite-personal-performance | python clustering.py | pandoc -i -f markdown -o study-groups.docx
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance | python clustering.py | pandoc -i -f markdown -o study-groups.docx
 ```
