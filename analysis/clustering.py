@@ -2,16 +2,33 @@ import numpy as np
 
 from sklearn import cluster, metrics
 
-from pprint import pprint
 import csv, sys
 
 
 def main():
-    reader = csv.reader(sys.stdin)
+    n_clusters = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+    trunc_misses = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+
+    # alg = cluster.AffinityPropagation()
+    alg = cluster.KMeans(n_clusters=n_clusters, init="random")
+    # alg = cluster.DBSCAN(eps=7, min_samples=3)
+    # alg = cluster.SpectralClustering(n_clusters=n_clusters)
+    # alg = cluster.MeanShift(bandwidth=6.9)
+
+    dump_groups(*make_groups(sys.stdin, alg), trunc_misses)
+
+
+def dump_groups(groups, get_topics_in_common, trunc_misses=5):
+    for group_name, trainees in groups.items():
+        print_group(trainees, group_name, get_topics_in_common(trainees), trunc_misses)
+
+
+def make_groups(stream, alg):
+    reader = csv.reader(stream)
     names = []
     missed_topics = []
 
-    header = reader.__next__()
+    keywords = reader.__next__()[1:]
     for row in reader:
         row = iter(row)
         names.append(row.__next__())
@@ -19,67 +36,12 @@ def main():
             [1 if cell == "x" else 0 for cell in row if cell == "x" or cell == ""]
         )
 
-    threshold = None
-
-    if threshold is not None:
-        header_iter = iter(header)
-        header_iter.__next__()
-
-        topics_to_ignore = []
-
-        for i, keyword in enumerate(header_iter):
-            l = [row[i] for row in missed_topics]
-            percent_missed = sum(l) / len(l)
-            if percent_missed > threshold:
-                topics_to_ignore.append(i)
-
-        print(
-            "Ignored topics: ",
-            [header[i + 1] for i in topics_to_ignore],
-            file=sys.stderr,
-        )
-
-        features = np.array(
-            [
-                [feature for i, feature in enumerate(row) if i not in topics_to_ignore]
-                for row in missed_topics
-            ]
-        )
-    else:
-        features = np.array(missed_topics)
-
-    alg = cluster.AffinityPropagation()
-    # alg = cluster.KMeans(n_clusters=15)
-    # alg = cluster.DBSCAN(eps=7, min_samples=3)
-    # alg = cluster.SpectralClustering(n_clusters=15)
-    # alg = cluster.MeanShift(bandwidth=6.9)
+    features = np.array(missed_topics)
 
     clustering = alg.fit(features)
     labels = clustering.labels_
 
     print(clustering, file=sys.stderr)
-    print(labels, file=sys.stderr)
-
-    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-    n_noise_ = list(labels).count(-1)
-    print("Estimated number of clusters: %d" % n_clusters_, file=sys.stderr)
-    print("Estimated number of noise points: %d" % n_noise_, file=sys.stderr)
-
-    groups = group(labels, names)
-
-    ungrouped = [names[0] for label, names in groups.items() if len(names) == 1]
-    groups = [names for label, names in groups.items() if len(names) > 1]
-
-    pprint(groups, indent=4, stream=sys.stderr)
-
-    print("Ungrouped trainees", file=sys.stderr)
-    pprint(ungrouped, indent=4, stream=sys.stderr)
-
-    print(
-        "{} groups, {} groupless trainees".format(len(groups), len(ungrouped)),
-        file=sys.stderr,
-    )
-
     print(
         "Calinski-Harabaz index",
         metrics.calinski_harabaz_score(features, labels),
@@ -91,17 +53,47 @@ def main():
         file=sys.stderr,
     )
 
-    for i, trainees in enumerate(groups):
-        print_group(trainees, "Group {}".format(i + 1))
+    groups = group(labels, names)
 
-    print_group(ungrouped, "Ungrouped trainees")
+    def get_topics_in_common(trainees):
+        d = {}
+
+        for trainee in trainees:
+            missed = missed_topics[names.index(trainee)]
+            for i, was_missed in enumerate(missed):
+                d.setdefault(i, []).append(was_missed)
+
+        return [
+            (keywords[i], list)
+            for i, list in sorted(
+                d.items(), key=lambda kv: (-1 * sum(kv[1]), keywords[kv[0]])
+            )
+        ]
+
+    return groups, get_topics_in_common
 
 
-def print_group(members, group_name):
+def print_group(members, group_name, topic_misses=None, trunc_misses=5):
     print("## {}\n".format(group_name))
 
     for member in members:
         print("- {}".format(member))
+
+    if topic_misses is not None:
+        print("\n\n### Topics in common\n")
+
+        if trunc_misses is not None:
+            topic_misses = topic_misses[:trunc_misses]
+
+        for topic, misses in topic_misses:
+            print(
+                "- **{}**: {} / {} missed (%{})".format(
+                    topic,
+                    sum(misses),
+                    len(misses),
+                    round((sum(misses) / len(misses)) * 100),
+                )
+            )
 
     print("\n")
 
@@ -110,6 +102,11 @@ def group(labels, names):
     groups = {label: [] for label in set(labels)}
     for i, label in enumerate(labels):
         groups[label].append(names[i])
+
+    groups = {
+        "Group {}".format(i + 1): names
+        for i, names in enumerate([names for label, names in groups.items()])
+    }
 
     return groups
 
