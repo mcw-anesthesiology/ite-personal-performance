@@ -1,19 +1,14 @@
 use regex::Regex;
 
 use std::collections::{HashMap, HashSet};
-use std::env;
 use std::error::Error;
-use std::fs::read_to_string;
-use std::io;
+use std::io::{self, BufRead};
 
 mod constants;
 
 use constants::*;
 
 fn main() {
-    let path = env::args().skip(1).next().unwrap();
-    let contents = read_to_string(path).unwrap();
-
     let name_re = Regex::new(
         r"Name: (?P<name>.+) Training Program: (?P<training_program>\d+) ID Number: (?P<id>\d+)",
     )
@@ -32,26 +27,28 @@ fn main() {
         .map(|s| *s)
         .collect();
 
-    for line in contents.lines() {
-        if let Some(caps) = name_re.captures(&line) {
-            if let (Some(name), Some(_training_program), Some(id)) = (
-                caps.name("name"),
-                caps.name("training_program"),
-                caps.name("id"),
-            ) {
-                let id = id.as_str().parse().unwrap();
-                let name = name.as_str().to_string();
-                trainee = Some(trainees.entry(id).or_insert(Trainee {
-                    name,
-                    id,
-                    missed_topics: HashSet::new(),
-                }));
-            }
-        } else {
-            if let Some(trainee) = trainee.as_mut() {
-                for item in all_items.iter() {
-                    if line == *item {
-                        trainee.missed_topics.insert(line.to_string());
+    for line in io::stdin().lock().lines() {
+        if let Ok(line) = line.as_ref() {
+            if let Some(caps) = name_re.captures(line) {
+                if let (Some(name), Some(_training_program), Some(id)) = (
+                    caps.name("name"),
+                    caps.name("training_program"),
+                    caps.name("id"),
+                ) {
+                    let id = id.as_str().parse().unwrap();
+                    let name = name.as_str().to_string();
+                    trainee = Some(trainees.entry(id).or_insert(Trainee {
+                        name,
+                        id,
+                        missed_topics: HashSet::new(),
+                    }));
+                }
+            } else {
+                if let Some(trainee) = trainee.as_mut() {
+                    for item in all_items.iter() {
+                        if line == *item {
+                            trainee.missed_topics.insert(line.to_string());
+                        }
                     }
                 }
             }
