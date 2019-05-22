@@ -1,19 +1,11 @@
-use regex::Regex;
-
 use std::collections::{HashMap, HashSet};
 use std::error::Error;
 use std::io::{self, BufRead};
 
-mod constants;
-
-use constants::*;
+use ite_personal_performance::constants::*;
+use ite_personal_performance::extract_header;
 
 fn main() {
-    let name_re = Regex::new(
-        r"Name: (?P<name>.+) Training Program: (?P<training_program>\d+) ID Number: (?P<id>\d+)",
-    )
-    .unwrap();
-
     let mut trainees: HashMap<u32, Trainee> = HashMap::new();
 
     let mut trainee: Option<&mut Trainee> = None;
@@ -29,12 +21,8 @@ fn main() {
 
     for line in io::stdin().lock().lines() {
         if let Ok(line) = line.as_ref() {
-            if let Some(caps) = name_re.captures(line) {
-                if let (Some(name), Some(_training_program), Some(id)) = (
-                    caps.name("name"),
-                    caps.name("training_program"),
-                    caps.name("id"),
-                ) {
+            if let Some(caps) = extract_header(line) {
+                if let (Some(name), Some(id)) = (caps.name("name"), caps.name("id")) {
                     let id = id.as_str().parse().unwrap();
                     let name = name.as_str().to_string();
                     trainee = Some(trainees.entry(id).or_insert(Trainee {
@@ -54,8 +42,6 @@ fn main() {
             }
         }
     }
-
-    dbg!(&trainees);
 
     let mut trainees: Vec<Trainee> = trainees.drain().map(|(_, v)| v).collect();
 

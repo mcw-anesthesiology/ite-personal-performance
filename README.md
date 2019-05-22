@@ -1,11 +1,31 @@
 # ITE Personal Performance
 
-Simple set of tools to extract discrete information from ACGME's ITE Keyword
-Report.
+Simple set of tools to extract discrete information from ACGME's ITE Personal
+Performance Reports.
 
 Currently only 2019 topics are supported.
 
-## Extractor
+## Score extractor
+
+Converts a raw dump of ITE Personal Performance Score reports into
+a CSV detailing the various scores each trainee.
+
+Input is accepted from stdin, output CSV is sent to stdout.
+
+### Usage
+
+```bash
+$ pdftotext -raw ITE_Score_Report.pdf - | ite-personal-scores
+```
+
+### Example output
+
+```csv
+Name,Scaled,Basic,Advanced,Basic Sciences # questions,Basic Sciences # correct,Basic Sciences 50%-ile,Basic Sciences 75%-ile,Basic Sciences 90%-ile,Clinical Sciences # questions,Clinical Sciences # correct,Clinical Sciences 50%-ile,Clinical Sciences 75%-ile,Clinical Sciences 90%-ile,Organ-based Basic & Clinical Sciences # questions,Organ-based Basic & Clinical Sciences # correct,Organ-based Basic & Clinical Sciences 50%-ile,Organ-based Basic & Clinical Sciences 75%-ile,Organ-based Basic & Clinical Sciences 90%-ile,Clinical Subspecialties # questions,Clinical Subspecialties # correct,Clinical Subspecialties 50%-ile,Clinical Subspecialties 75%-ile,Clinical Subspecialties 90%-ile,Special Problems or Issues in Anesthesiology # questions,Special Problems or Issues in Anesthesiology # correct,Special Problems or Issues in Anesthesiology 50%-ile,Special Problems or Issues in Anesthesiology 75%-ile,Special Problems or Issues in Anesthesiology 90%-ile
+…
+```
+
+## Keyword extractor
 
 Converts a raw text dump of of ITE Personal Performance keyword reports into a
 CSV detailing which topics were missed by each trainee. An `x` in a given
@@ -16,7 +36,7 @@ Input is accepted from stdin, output CSV is sent to stdout.
 ### Usage
 
 ```bash
-$ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance
+$ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords
 ```
 
 ### Example output
@@ -43,7 +63,7 @@ The following will create 4 study groups and display the top 6 missed topics in
 common for each group.
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance | python clustering.py 4 6
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python clustering.py 4 6
 ```
 
 ### Example output
@@ -81,5 +101,5 @@ For ease of distribution, the document can be rendered as a Word DOCX (or
 anything else) easily using pandoc:
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-performance | python clustering.py | pandoc -i -f markdown -o study-groups.docx
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python clustering.py | pandoc -i -f markdown -o study-groups.docx
 ```
