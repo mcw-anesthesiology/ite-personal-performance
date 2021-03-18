@@ -32,7 +32,7 @@ fn main() {
 
     for line in io::stdin().lock().lines() {
         if let Ok(line) = line.as_ref() {
-            if line == "THE AMERICAN BOARD OF ANESTHESIOLOGY" {
+            if line.contains("AMERICAN BOARD OF ANESTHESIOLOGY") {
                 match (name, id, scaled, basic, advanced) {
                     (Some(name), Some(id), Some(scaled), Some(basic), Some(advanced)) => {
                         trainees.push(Trainee {
@@ -118,7 +118,7 @@ fn main() {
                                 percentile_90,
                             })
                         }
-                        "Organ-based Basic & Clinical Sciences" => {
+                        "Organ-Based and Clinical Sciences" => {
                             organ_based_sciences = Some(CategoryScore {
                                 total,
                                 correct,
@@ -161,7 +161,7 @@ fn match_to_u32(m: Match) -> Option<u32> {
     m.as_str().parse::<u32>().ok()
 }
 
-fn dump_scores(trainees: &Vec<Trainee>) -> Result<(), Box<Error>> {
+fn dump_scores(trainees: &Vec<Trainee>) -> Result<(), Box<dyn Error>> {
     let mut writer = csv::Writer::from_writer(io::stdout());
     writer.write_record(
         ["Name", "Scaled", "Basic", "Advanced"]

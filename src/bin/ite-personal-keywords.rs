@@ -1,23 +1,22 @@
-use std::collections::{HashMap, HashSet};
-use std::error::Error;
-use std::io::{self, BufRead};
+use regex::Regex;
 
-use ite_personal_performance::constants::*;
+use std::{
+    collections::{HashMap, HashSet},
+    error::Error,
+    io::{self, BufRead},
+    iter::IntoIterator,
+};
+
 use ite_personal_performance::extract_header;
 
 fn main() {
+    let item_re: Regex = Regex::new(r".+ \([A-B]\)$").unwrap();
+
     let mut trainees: HashMap<u32, Trainee> = HashMap::new();
 
     let mut trainee: Option<&mut Trainee> = None;
 
-    let all_items: Vec<&str> = BASIC_SCIENCES_ITEMS
-        .iter()
-        .chain(CLINICAL_SCIENCES_ITEMS.iter())
-        .chain(ORGAN_BASED_SCIENCES_ITEMS.iter())
-        .chain(CLINICAL_SUBSPECIALTIES_ITEMS.iter())
-        .chain(SPECIAL_PROBLEMS_ITEMS.iter())
-        .map(|s| *s)
-        .collect();
+    let mut all_items: HashSet<String> = HashSet::new();
 
     for line in io::stdin().lock().lines() {
         if let Ok(line) = line.as_ref() {
@@ -33,10 +32,12 @@ fn main() {
                 }
             } else {
                 if let Some(trainee) = trainee.as_mut() {
-                    for item in all_items.iter() {
-                        if line == *item {
-                            trainee.missed_topics.insert(line.to_string());
+                    if item_re.is_match(line) {
+                        let line = line.to_string();
+                        if !all_items.contains(&line) {
+                            all_items.insert(line.clone());
                         }
+                        trainee.missed_topics.insert(line);
                     }
                 }
             }
@@ -47,10 +48,11 @@ fn main() {
 
     trainees.sort_unstable_by(|a, b| a.name.cmp(&b.name));
 
-    dump_missed_topics(&trainees, &all_items).unwrap();
+    let all_items: Vec<String> = all_items.into_iter().collect();
+    dump_missed_topics(&trainees, all_items.as_slice()).unwrap();
 }
 
-fn dump_missed_topics(trainees: &Vec<Trainee>, items: &Vec<&str>) -> Result<(), Box<Error>> {
+fn dump_missed_topics(trainees: &Vec<Trainee>, items: &[String]) -> Result<(), Box<dyn Error>> {
     let mut writer = csv::Writer::from_writer(io::stdout());
     writer.write_field("Name")?;
     writer.write_record(items.iter())?;
@@ -58,7 +60,7 @@ fn dump_missed_topics(trainees: &Vec<Trainee>, items: &Vec<&str>) -> Result<(), 
     for trainee in trainees.iter() {
         writer.write_field(&trainee.name)?;
         writer.write_record(items.iter().map(|item| {
-            if trainee.missed_topics.contains(*item) {
+            if trainee.missed_topics.contains(item) {
                 "x"
             } else {
                 ""

@@ -41,18 +41,6 @@ def make_groups(stream, alg):
     clustering = alg.fit(features)
     labels = clustering.labels_
 
-    print(clustering, file=sys.stderr)
-    print(
-        "Calinski-Harabaz index",
-        metrics.calinski_harabaz_score(features, labels),
-        file=sys.stderr,
-    )
-    print(
-        "Davies Bouldin index",
-        metrics.davies_bouldin_score(features, labels),
-        file=sys.stderr,
-    )
-
     groups = group(labels, names)
 
     def get_topics_in_common(trainees):

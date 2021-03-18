@@ -3,7 +3,7 @@
 Simple set of tools to extract discrete information from ACGME's ITE Personal
 Performance Reports.
 
-Currently only 2019 topics are supported.
+Current version is valid for 2021 report format.
 
 ## Score extractor
 
@@ -101,5 +101,5 @@ For ease of distribution, the document can be rendered as a Word DOCX (or
 anything else) easily using pandoc:
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python clustering.py | pandoc -i -f markdown -o study-groups.docx
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python analysis/clustering.py | pandoc -i -f markdown -o study-groups.docx
 ```
