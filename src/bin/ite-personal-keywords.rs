@@ -2,6 +2,7 @@ use regex::Regex;
 
 use std::{
     collections::{HashMap, HashSet},
+    env,
     error::Error,
     io::{self, BufRead},
     iter::IntoIterator,
@@ -47,9 +48,18 @@ fn main() {
     let mut trainees: Vec<Trainee> = trainees.drain().map(|(_, v)| v).collect();
 
     trainees.sort_unstable_by(|a, b| a.name.cmp(&b.name));
+    let mut all_items: Vec<String> = all_items.into_iter().collect();
+    all_items.sort_unstable();
 
-    let all_items: Vec<String> = all_items.into_iter().collect();
-    dump_missed_topics(&trainees, all_items.as_slice()).unwrap();
+    if env::args().any(|arg| arg == "--by-topic") {
+        if env::args().any(|arg| arg == "--list") {
+            dump_trainee_topics_list(&trainees, all_items.as_slice()).unwrap();
+        } else {
+            dump_trainee_topics(&trainees, all_items.as_slice()).unwrap();
+        }
+    } else {
+        dump_missed_topics(&trainees, all_items.as_slice()).unwrap();
+    }
 }
 
 fn dump_missed_topics(trainees: &Vec<Trainee>, items: &[String]) -> Result<(), Box<dyn Error>> {
@@ -69,6 +79,43 @@ fn dump_missed_topics(trainees: &Vec<Trainee>, items: &[String]) -> Result<(), B
     }
 
     writer.flush()?;
+
+    Ok(())
+}
+
+fn dump_trainee_topics(trainees: &Vec<Trainee>, items: &[String]) -> Result<(), Box<dyn Error>> {
+    let mut writer = csv::Writer::from_writer(io::stdout());
+    writer.write_field("Item")?;
+    writer.write_record(trainees.iter().map(|t| &t.name))?;
+
+    for item in items {
+        writer.write_field(&item)?;
+        writer.write_record(trainees.iter().map(|trainee| {
+            if trainee.missed_topics.contains(item) {
+                "x"
+            } else {
+                ""
+            }
+        }))?;
+    }
+
+    writer.flush()?;
+    Ok(())
+}
+
+fn dump_trainee_topics_list(
+    trainees: &Vec<Trainee>,
+    items: &[String],
+) -> Result<(), Box<dyn Error>> {
+    for item in items {
+        println!("## {}\n", item);
+        for trainee in trainees {
+            if trainee.missed_topics.contains(item) {
+                println!("- {}", trainee.name);
+            }
+        }
+        println!();
+    }
 
     Ok(())
 }

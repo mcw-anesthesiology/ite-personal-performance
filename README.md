@@ -39,12 +39,43 @@ Input is accepted from stdin, output CSV is sent to stdout.
 $ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords
 ```
 
-### Example output
-
 ```csv
 "Name","Topic 1","Topic 2","Topic 3"
 "Trainee 1",x,,x
 "Trainee 2",,x,x
+```
+
+The output can be transposed, with topics as rows and trainees as columns, by passing the `--by-topic` flag.
+
+```bash
+$ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords --by-topic
+```
+
+```csv
+"Item","Trainee 1","Trainee 2"
+"Topic 1",x,
+"Topic 2",,x
+"Topic 3",x,x
+```
+By _also_ passing the `--list` flag, the topic view can be displayed as a series of markdown lists, which can easily be passed to pandoc to be rendered as a DOCX or other format if desired as described below.
+
+```bash
+$ pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords --by-topic --list
+```
+
+```markdown
+## Topic 1
+
+- Trainee 1
+
+## Topic 2
+
+- Trainee 2
+
+## Topic 3
+
+- Trainee 1
+- Trainee 2
 ```
 
 
