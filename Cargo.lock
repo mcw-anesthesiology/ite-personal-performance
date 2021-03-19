@@ -32,7 +32,7 @@ dependencies = [
 
 [[package]]
 name = "ite-personal-performance"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "csv",
  "lazy_static",
