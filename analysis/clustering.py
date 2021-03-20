@@ -1,5 +1,4 @@
 import numpy as np
-
 from sklearn import cluster, metrics
 
 import csv, sys

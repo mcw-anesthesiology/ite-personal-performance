@@ -88,13 +88,15 @@ K-Means clustering, and displays the top 5 missed topics in common for each
 group. Number of groups and missed topics can be customized using command line
 arguments.
 
+Requires numpy and scikit-learn as dependencies.
+
 ### Usage
 
 The following will create 4 study groups and display the top 6 missed topics in
 common for each group.
 
 ```bash
-pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python clustering.py 4 6
+pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python analysis/clustering.py 4 6
 ```
 
 ### Example output
