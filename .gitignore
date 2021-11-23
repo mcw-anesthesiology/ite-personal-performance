@@ -2,3 +2,5 @@
 **/*.rs.bk
 .venv/
 __pycache__/
+web/bin/
+.vercel

@@ -1,0 +1,10 @@
+{
+    "functions": {
+        "api/personal-scores.py": {
+            "includeFiles": "bin/ite-personal-scores"
+        },
+        "api/personal-keywords.py": {
+            "includeFiles": "bin/ite-personal-keywords"
+        }
+    }
+}
