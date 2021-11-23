@@ -1,22 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>ITE Personal Performance</title>
+		<style>
+			body {
+				font-family: sans-serif;
+			}
 
-<html>
+			main {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			section {
+				margin: 2em;
+			}
+
+			h2 {
+				text-align: center;
+			}
+
+			form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+
+			.file-input {
+				box-sizing: border-box;
+				width: 25em;
+				max-width: 100%;
+				height: 10em;
+				border: 1px solid #666;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				padding: 2em;
+				font-size: 1.25em;
+			}
+
+			button {
+				display: block;
+				margin-top: 2em;
+			}
+
+			fieldset {
+				margin-top: 2em;
+			}
+
+			fieldset div {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: space-around;
+			}
+
+			fieldset label {
+				display: block;
+				margin: 1em;
+			}
+		</style>
+	</head>
+
 	<body>
-		<h2>Personal scores</h2>
-		<form method="POST" action="/api/personal-scores" enctype="multipart/form-data">
-			<input type="file" name="file" />
+		<main>
+			<h1>ITE Personal Performance</h1>
 
-			<button type="submit">
-				Submit
-			</button>
-		</form>
+			<section>
+				<h2>Scores</h2>
+				<form method="POST" action="/api/personal-scores" enctype="multipart/form-data">
+					<label class="file-input">
+						ITE Score Report PDF
+						<input type="file" name="file" accept=".pdf" />
+					</label>
 
-		<h2>Personal keywords</h2>
-		<form method="POST" action="/api/personal-keywords" enctype="multipart/form-data">
-			<input type="file" name="file" />
+					<button type="submit">
+						Submit
+					</button>
+				</form>
+			</section>
+			<section>
+				<h2>Keywords</h2>
+				<form method="POST" action="/api/personal-keywords" enctype="multipart/form-data">
+					<label class="file-input">
+						ITE Keyword Report PDF
+						<input type="file" name="file" accept=".pdf" />
+					</label>
 
-			<button type="submit">
-				Submit
-			</button>
-		</form>
+					<fieldset>
+						<legend>Options</legend>
+
+						<div>
+							<label>
+								<input type="checkbox" name="options" value="--by-topic" />
+								By topic
+							</label>
+
+							<label>
+								<input type="checkbox" name="options" value="--list" />
+								List
+								<small>
+									(requires <i>By topic</i>)
+								</small>
+							</label>
+						</div>
+					</fieldset>
+
+					<button type="submit">
+						Submit
+					</button>
+				</form>
+			</section>
+		</main>
 	</body>
 </html>

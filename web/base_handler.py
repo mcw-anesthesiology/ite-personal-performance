@@ -4,6 +4,15 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
 
 import cgi, os, re, subprocess
+import sys
+
+
+def default_content_type(_):
+    return "text/csv"
+
+
+def default_filename(_):
+    return "scores.csv"
 
 
 class BaseHandler(BaseHTTPRequestHandler):
@@ -33,7 +42,12 @@ class BaseHandler(BaseHTTPRequestHandler):
         self.send_response(HTTPStatus.OK)
         self.end_headers()
 
-    def handle_POST(self, bintool):
+    def handle_POST(
+        self,
+        bintool,
+        get_filename=default_filename,
+        get_content_type=default_content_type,
+    ):
         origin = self.headers.get("origin")
 
         if not self.test_origin(origin):
@@ -54,11 +68,18 @@ class BaseHandler(BaseHTTPRequestHandler):
             },
         )
         raw = "".join(pdftotext.PDF(form["file"].file, raw=True))
-
-        p = subprocess.run([bintool], input=raw, text=True, capture_output=True)
+        p = subprocess.run(
+            [bintool, *form.getlist("options")],
+            input=raw,
+            text=True,
+            capture_output=True,
+        )
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-Type", "text/csv")
-        self.send_header("Content-Disposition", 'attachment; filename="scores.csv"')
+        self.send_header("Content-Type", get_content_type(form))
+        self.send_header(
+            "Content-Disposition",
+            'attachment; filename="{}"'.format(get_filename(form)),
+        )
         self.end_headers()
 
         self.wfile.write(bytes(p.stdout, "ascii"))
