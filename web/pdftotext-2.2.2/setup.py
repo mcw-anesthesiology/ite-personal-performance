@@ -93,6 +93,7 @@ shutil.copy("/usr/lib64/libfreetype.so.6", "/vercel/path1/libfreetype.so.6")
 shutil.copy("/usr/lib64/libjbig.so.2.0", "/vercel/path1/libjbig.so.2.0")
 shutil.copy("/usr/lib64/libexpat.so.1", "/vercel/path1/libexpat.so.1")
 shutil.copy("/usr/lib64/libuuid.so.1", "/vercel/path1/libuuid.so.1")
+shutil.copy("/usr/lib64/libbz2.so.1", "/vercel/path1/libbz2.so.1")
 library_dirs = ["./"]
 
 macros = [
