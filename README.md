@@ -136,3 +136,8 @@ anything else) easily using pandoc:
 ```bash
 pdftotext -raw ITE_Keyword_Report.pdf - | ite-personal-keywords | python analysis/clustering.py | pandoc -i -f markdown -o study-groups.docx
 ```
+
+## Web Interface
+
+A web interface exists in the `web` directory, see its README for more
+information.

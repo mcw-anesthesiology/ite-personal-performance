@@ -69,6 +69,8 @@ if platform.system() == "Darwin":
     if brew_library is not None:
         library_dirs.append(brew_library)
 
+# Hijack this install script to install system dependencies,
+# Vercel doesn't seem to give us any other way aside from making our own runtime
 subprocess.run(["yum", "update"])
 subprocess.run(
     [
