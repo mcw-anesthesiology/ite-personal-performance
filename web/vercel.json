@@ -1,10 +1,13 @@
 {
     "functions": {
         "api/personal-scores.py": {
-            "includeFiles": "bin/ite-personal-scores"
+            "includeFiles": "(lib/ite-personal-scores|base_handler.py|libpoppler-cpp.so.10)"
         },
         "api/personal-keywords.py": {
-            "includeFiles": "bin/ite-personal-keywords"
+            "includeFiles": "(lib/ite-personal-keywords|base_handler.py|libpoppler-cpp.so.10)"
         }
+    },
+    "env": {
+        "LD_PRELOAD": "libpoppler-cpp.so.10"
     }
 }

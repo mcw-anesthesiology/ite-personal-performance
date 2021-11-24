@@ -19,4 +19,4 @@ def get_content_type(form):
 
 class handler(BaseHandler):
     def do_POST(self):
-        self.handle_POST("./bin/ite-personal-keywords", get_filename, get_content_type)
+        self.handle_POST("./lib/ite-personal-keywords", get_filename, get_content_type)

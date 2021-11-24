@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "vercel-build": "yum install poppler-utils"
+    "vercel-build": "yum install gcc-c++ poppler-utils pkgconfig poppler-cpp-devel python3-devel && pip install pdftotext"
   },
   "repository": {
     "type": "git",

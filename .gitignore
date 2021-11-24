@@ -4,4 +4,5 @@
 __pycache__/
 web/bin/
 web/lib/
+web/poppler/
 .vercel
