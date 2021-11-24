@@ -1,14 +1,14 @@
 {
     "functions": {
         "api/personal-scores.py": {
-            "includeFiles": "(lib/ite-personal-scores|base_handler.py|libpoppler-cpp.so.10|libpoppler.so.46|liblcms2.so.2|libtiff.so.5|libjpeg.so.62|libpng15.so.15|libopenjpeg.so.1|libfontconfig.so.1|libfreetype.so.6|libjbig.so.2.0|libexpat.so.1|libuuid.so.1|libbz2.so.1)"
+            "includeFiles": "(lib/ite-personal-scores|base_handler.py|libpoppler-cpp.so.0|libpoppler.so.115|liblcms2.so.2|libtiff.so.5|libjpeg.so.62|libpng15.so.15|libopenjp2.so.7|libfontconfig.so.1|libfreetype.so.6|libjbig.so.2.0|libexpat.so.1|libuuid.so.1|libbz2.so.1)"
         },
         "api/personal-keywords.py": {
-            "includeFiles": "(lib/ite-personal-keywords|base_handler.py|libpoppler-cpp.so.10|libpoppler.so.46|liblcms2.so.2|libtiff.so.5|libjpeg.so.62|libpng15.so.15|libopenjpeg.so.1|libfontconfig.so.1|libfreetype.so.6|libjbig.so.2.0|libexpat.so.1|libuuid.so.1|libbz2.so.1)"
+            "includeFiles": "(lib/ite-personal-keywords|base_handler.py|libpoppler-cpp.so.0|libpoppler.so.115|liblcms2.so.2|libtiff.so.5|libjpeg.so.62|libpng15.so.15|libopenjp2.so.7|libfontconfig.so.1|libfreetype.so.6|libjbig.so.2.0|libexpat.so.1|libuuid.so.1|libbz2.so.1)"
         }
     },
     "env": {
         "LD_LIBRARY_PATH": ".",
-        "LD_PRELOAD": "libpoppler-cpp.so.10 libpoppler.so.46 liblcms2.so.2 libtiff.so.5 libjpeg.so.62 libpng15.so.15 libopenjpeg.so.1 libfontconfig.so.1 libfreetype.so.6 libjbig.so.2.0 libexpat.so.1 libuuid.so.1 libbz2.so.1"
+        "LD_PRELOAD": "libpoppler-cpp.so.0 libpoppler.so.115 liblcms2.so.2 libtiff.so.5 libjpeg.so.62 libpng15.so.15 libopenjp2.so.7 libfontconfig.so.1 libfreetype.so.6 libjbig.so.2.0 libexpat.so.1 libuuid.so.1 libbz2.so.1"
     }
 }

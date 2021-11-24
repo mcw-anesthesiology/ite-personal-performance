@@ -69,32 +69,47 @@ if platform.system() == "Darwin":
     if brew_library is not None:
         library_dirs.append(brew_library)
 
+subprocess.run(["yum", "update"])
 subprocess.run(
     [
         "yum",
         "install",
         "gcc-c++",
-        "poppler-utils",
         "pkgconfig",
-        "poppler-cpp-devel",
         "python3-devel",
+        "fontconfig-devel",
+        "wget",
+        "xz",
+        "cmake3",
+        "libjpeg-devel",
+        "openjpeg2-devel",
+        "cairo-devel",
+        "boost",
+        "boost-devel",
+        "qt5-devel",
     ]
 )
+subprocess.run(["wget", "https://poppler.freedesktop.org/poppler-21.11.0.tar.xz"])
+subprocess.run(["tar", "-Jxvf", "poppler-21.11.0.tar.xz"])
+os.makedirs("poppler-21.11.0/build", exist_ok=True)
+subprocess.run(["cmake3", "..", "-DENABLE_BOOST=OFF"], cwd="poppler-21.11.0/build")
+subprocess.run(["make"], cwd="poppler-21.11.0/build")
+subprocess.run(["make", "install"], cwd="poppler-21.11.0/build")
 
-shutil.copy("/usr/lib64/libpoppler-cpp.so.10", "/vercel/path1/libpoppler-cpp.so.10")
-shutil.copy("/usr/lib64/libpoppler.so.46", "/vercel/path1/libpoppler.so.46")
+shutil.copy("/usr/local/lib64/libpoppler-cpp.so.0", "/vercel/path1/libpoppler-cpp.so.0")
+shutil.copy("/usr/local/lib64/libpoppler.so.115", "/vercel/path1/libpoppler.so.115")
 shutil.copy("/usr/lib64/liblcms2.so.2", "/vercel/path1/liblcms2.so.2")
 shutil.copy("/usr/lib64/libtiff.so.5", "/vercel/path1/libtiff.so.5")
 shutil.copy("/usr/lib64/libjpeg.so.62", "/vercel/path1/libjpeg.so.62")
 shutil.copy("/usr/lib64/libpng15.so.15", "/vercel/path1/libpng15.so.15")
-shutil.copy("/usr/lib64/libopenjpeg.so.1", "/vercel/path1/libopenjpeg.so.1")
+shutil.copy("/usr/lib64/libopenjp2.so.7", "/vercel/path1/libopenjp2.so.7")
 shutil.copy("/usr/lib64/libfontconfig.so.1", "/vercel/path1/libfontconfig.so.1")
 shutil.copy("/usr/lib64/libfreetype.so.6", "/vercel/path1/libfreetype.so.6")
 shutil.copy("/usr/lib64/libjbig.so.2.0", "/vercel/path1/libjbig.so.2.0")
 shutil.copy("/usr/lib64/libexpat.so.1", "/vercel/path1/libexpat.so.1")
 shutil.copy("/usr/lib64/libuuid.so.1", "/vercel/path1/libuuid.so.1")
 shutil.copy("/usr/lib64/libbz2.so.1", "/vercel/path1/libbz2.so.1")
-library_dirs = ["./"]
+library_dirs = ["./", "/usr/local/lib64"]
 
 macros = [
     ("POPPLER_CPP_AT_LEAST_0_30_0", int(poppler_cpp_at_least("0.30.0"))),
