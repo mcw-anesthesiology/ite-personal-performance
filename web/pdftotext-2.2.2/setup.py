@@ -81,7 +81,18 @@ subprocess.run(
     ]
 )
 
-shutil.copy("/usr/lib64/libpoppler-cpp.so", "libpoppler-cpp.so.10")
+shutil.copy("/usr/lib64/libpoppler-cpp.so.10", "/vercel/path1/libpoppler-cpp.so.10")
+shutil.copy("/usr/lib64/libpoppler.so.46", "/vercel/path1/libpoppler.so.46")
+shutil.copy("/usr/lib64/liblcms2.so.2", "/vercel/path1/liblcms2.so.2")
+shutil.copy("/usr/lib64/libtiff.so.5", "/vercel/path1/libtiff.so.5")
+shutil.copy("/usr/lib64/libjpeg.so.62", "/vercel/path1/libjpeg.so.62")
+shutil.copy("/usr/lib64/libpng15.so.15", "/vercel/path1/libpng15.so.15")
+shutil.copy("/usr/lib64/libopenjpeg.so.1", "/vercel/path1/libopenjpeg.so.1")
+shutil.copy("/usr/lib64/libfontconfig.so.1", "/vercel/path1/libfontconfig.so.1")
+shutil.copy("/usr/lib64/libfreetype.so.6", "/vercel/path1/libfreetype.so.6")
+shutil.copy("/usr/lib64/libjbig.so.2.0", "/vercel/path1/libjbig.so.2.0")
+shutil.copy("/usr/lib64/libexpat.so.1", "/vercel/path1/libexpat.so.1")
+shutil.copy("/usr/lib64/libuuid.so.1", "/vercel/path1/libuuid.so.1")
 library_dirs = ["./"]
 
 macros = [
